@@ -1,0 +1,12 @@
+<!-- fragments.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <th:block th:fragment="subcategoryOptions">
+    <option value="">-- Select Sub-Category --</option>
+    <option th:each="sub : ${subcategories}" 
+            th:value="${sub.id}" 
+            th:text="${sub.name}"></option>
+  </th:block>
+</body>
+</html>

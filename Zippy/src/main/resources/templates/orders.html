@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Orders</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" th:href="@{/assets/css/style.css}" />
+</head>
+<body>
+
+<div th:replace="header :: header"></div>
+
+<h2 class="text-center mb-4">Your Orders</h2>
+
+<div th:if="${#lists.isEmpty(orders)}" class="alert alert-info text-center">
+  <h5>You haven't ordered anything yet.</h5>
+</div>
+
+<div th:if="${not #lists.isEmpty(orders)}">
+  <div class="table-responsive m-3">
+    <table class="table table-bordered table-hover text-center align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Product Name</th>
+          <th>Total Price</th>
+          <th>Quantity</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+          <th>Review</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="ob : ${orders}">
+          <td>[[${ob.id}]]</td>
+          <td><img th:src="@{${ob.product.pimg}}" alt="Product Image" width="40" height="40"></td>
+          <td>[[${ob.product.pname}]]</td>
+          <td>&#8377; [[${ob.product.pprice}]]</td>
+          <td>[[${ob.quantity}]]</td>
+          <td>[[${ob.orderDate}]]</td>
+          <td th:switch="${ob.status}">
+            <span th:case="Pending" class="badge bg-warning">Pending</span>
+            <span th:case="packing" class="badge bg-primary">Packing</span>
+            <span th:case="out-for-delivery" class="badge bg-info">Out for delivery</span>
+            <span th:case="delivered" class="badge bg-success">Delivered</span>
+            <span th:case="canceled" class="badge bg-danger">Canceled</span>
+          </td>
+          <td th:switch="${ob.status}" class="d-flex justify-content-center">
+            <span th:case="Pending">
+              <a th:href="@{/order/cancel(id=${ob.id})}" class="btn btn-danger btn-sm">Cancel</a>
+            </span>
+            <span th:case="packing" class="btn btn-warning btn-sm disabled">Packing</span>
+            <span th:case="out-for-delivery" class="btn btn-info btn-sm disabled">Out for delivery</span>
+            <span th:case="delivered" class="btn btn-secondary btn-sm disabled">Delivered</span>
+            <span th:case="canceled" class="btn btn-secondary btn-sm disabled">Canceled</span>
+          </td>
+          <td>
+            <div th:if="${ob.status == 'delivered' and ob.review != null}">
+              <strong class="text-success">Reviewed</strong><br/>
+              <span th:utext="${#strings.repeat('&#9733;', ob.review.rating)}" style="color:gold;"></span>
+            </div>
+            <a th:if="${ob.status == 'delivered' and ob.review == null}" href="#"
+               class="btn btn-primary leave-review-btn"
+               data-bs-toggle="modal"
+               data-bs-target="#reviewModal"
+               th:data-order-id="${ob.id}">Leave Review</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination only if orders exist -->
+  <nav>
+    <ul class="pagination justify-content-end me-4">
+      <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+        <a class="page-link" th:href="@{orders(page=${currentPage-1})}">Previous</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+          th:classappend="${i == currentPage} ? 'active'">
+        <a class="page-link" th:href="@{orders(page=${i})}" th:text="${i+1}">1</a>
+      </li>
+      <li class="page-item" th:classappend="${currentPage == totalPages-1} ? 'disabled'">
+        <a class="page-link" th:href="@{orders(page=${currentPage+1})}">Next</a>
+      </li>
+    </ul>
+  </nav>
+
+<!-- Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Rate Your Order</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="rating" class="mb-3">
+          <span class="star" data-value="1">&#9733;</span>
+          <span class="star" data-value="2">&#9733;</span>
+          <span class="star" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+        <textarea id="reviewMessage" class="form-control" rows="4" placeholder="Write your review here..." required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="submitReview" class="btn btn-primary">Submit Review</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .star {
+    font-size: 30px;
+    color: #ddd;
+    cursor: pointer;
+  }
+  .star.selected {
+    color: gold;
+  }
+</style>
+
+<script>
+  let currentOrderId = null;
+
+  document.querySelectorAll('.star').forEach(star => {
+    star.classList.remove('selected');
+    star.addEventListener('click', function () {
+      let value = parseInt(this.getAttribute('data-value'));
+      document.querySelectorAll('.star').forEach((s, i) => {
+        s.classList.toggle('selected', i < value);
+      });
+    });
+  });
+
+  document.querySelectorAll('.leave-review-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      currentOrderId = this.getAttribute('data-order-id');
+      document.getElementById('reviewMessage').value = "";
+      document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+    });
+  });
+
+  document.getElementById('submitReview').addEventListener('click', function () {
+    let rating = document.querySelectorAll('.star.selected').length;
+    let message = document.getElementById('reviewMessage').value.trim();
+
+    if (rating === 0 || message === "") {
+      Swal.fire('Error', 'Please provide a rating and review message', 'warning');
+      return;
+    }
+
+    fetch('/order/submitReview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId: currentOrderId, rating: rating, reviewMessage: message })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        Swal.fire('Thank you!', 'Your review has been submitted.', 'success').then(() => location.reload());
+      } else {
+        Swal.fire('Oops!', data.message || 'Something went wrong', 'error');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      Swal.fire('Error', 'Server error occurred.', 'error');
+    });
+  });
+</script>
+
+</body>
+</html>

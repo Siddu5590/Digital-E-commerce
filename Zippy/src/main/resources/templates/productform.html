@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Product</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/css/adminHeader.css}" />
+
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+
+  <style>
+    /* Background Video */
+    .bg-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    /* Center form container */
+    .signup-container {
+      padding: 20px;
+      margin: 5% 5%; 
+      width: 45%; 
+      max-width: 600px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.95);
+      position: relative;
+    }
+
+    h2 {
+      color: black;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #b29e9e;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      align-self: center;
+      width: 50%;
+      max-width: 200px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+    }
+
+    /* Style for text area */
+    textarea {
+      resize: vertical;
+    }
+
+    /* Adjustments for Video Background */
+    .bg-video {
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+  <div th:replace="adminHeader :: adminHeader"></div>
+
+  <!-- Video Background -->
+  <video autoplay loop muted playsinline class="bg-video">
+    <source src="/video/productformm.mp4" type="video/mp4">
+  </video>
+
+  <div class="signup-container">
+
+    <form id="productForm" th:action="@{/product/form}" method="post" th:object="${product}">
+      <h2>Add Product</h2>
+
+      <div th:if="${message != null}" style="text-align: center; color: green;">
+        <p th:text="${message}"></p>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <select id="category" name="category.id" onchange="updateSubcategories()">
+          <option value="">-- Select Category --</option>
+          <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+        </select>
+      </div>
+
+      <!-- Subcategory -->
+      <div class="form-group">
+        <label for="subcategory">Sub-Category:</label>
+        <select id="subcategory" name="psubCategory.id">
+          <option value="">-- Select Sub-Category --</option>
+          <!-- Subcategories will be dynamically loaded here -->
+        </select>
+      </div>
+
+      <!-- Product Name -->
+      <div class="form-group">
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="pname" />
+      </div>
+
+      <!-- Image Paths -->
+      <div class="form-group">
+        <label for="imagePath">Image Path 1:</label>
+        <input type="text" id="imagePath" name="pimg" />
+      </div>
+
+      <div class="form-group">
+        <label for="imagePath">Image Path 2:</label>
+        <input type="text" id="imagePath" name="pimg2" />
+      </div>
+
+      <div class="form-group">
+        <label for="imagePath">Image Path 3:</label>
+        <input type="text" id="imagePath" name="pimg3" />
+      </div>
+
+      <!-- Quantity -->
+      <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="text" id="quantity" name="quantity" />
+      </div>
+
+      <!-- Price -->
+      <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="pprice" />
+      </div>
+
+      <!-- Discount -->
+      <div class="form-group">
+        <label for="discount">Discount (%):</label>
+        <input type="number" id="discount" name="pdiscount" />
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Description:</label>
+        <textarea id="description" name="pdescription" rows="3"></textarea>
+      </div>
+
+      <!-- Hidden Stock -->
+      <input type="hidden" id="stock" name="stock" value="available" />
+
+      <!-- Submit Button -->
+      <button type="submit">Submit</button>
+    </form>
+
+  </div>
+
+  <!-- Optional JavaScript: Add a function to update subcategories dynamically -->
+  <script>
+    function updateSubcategories() {
+      const categorySelect = document.getElementById('category');
+      const subcategorySelect = document.getElementById('subcategory');
+      const selectedCategoryId = categorySelect.value;
+
+      // Fetch subcategories based on the selected category
+      fetch(`/product/getSubcategories?categoryId=${selectedCategoryId}`)
+        .then(response => response.text())
+        .then(data => {
+          subcategorySelect.innerHTML = data;
+        });
+    }
+  </script>
+
+  <script>
+    $(document).ready(function () {
+      $("#productForm").validate({
+        rules: {
+          "category.id": {
+            required: true
+          },
+          "psubCategory.id": {
+            required: true
+          },
+          pname: {
+            required: true
+          },
+          pimg: {
+            required: true
+          },
+          pimg2: {
+            required: true
+          },
+          pimg3: {
+            required: true
+          },
+          pprice: {
+            required: true,
+            number: true
+          },
+          pdiscount: {
+            required: true,
+            number: true
+          },
+          pdescription: {
+            required: true
+          }
+        },
+        messages: {
+          "category.id": {
+            required: "Please select a category"
+          },
+          "psubCategory.id": {
+            required: "Please select a sub-category"
+          },
+          pname: {
+            required: "Please enter the product name"
+          },
+          pimg: {
+            required: "Please enter Image Path 1"
+          },
+          pimg2: {
+            required: "Please enter Image Path 2"
+          },
+          pimg3: {
+            required: "Please enter Image Path 3"
+          },
+          pprice: {
+            required: "Please enter the price",
+            number: "Please enter a valid number"
+          },
+          pdiscount: {
+            required: "Please enter discount",
+            number: "Please enter a valid number"
+          },
+          pdescription: {
+            required: "Please enter a description"
+          }
+        },
+        errorPlacement: function (error, element) {
+          error.insertAfter(element);
+        },
+        highlight: function (element) {
+          $(element).css("border-color", "red");
+        },
+        unhighlight: function (element) {
+          $(element).css("border-color", "#ccc");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

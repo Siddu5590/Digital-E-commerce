@@ -1,0 +1,13 @@
+@charset "UTF-8";
+.background-video1{
+  height: 65px;
+  width: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid white;
+}
+.head {
+  background: linear-gradient(to right, #bef565, #7ae187);
+  color: white;
+  height: 75px;
+}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    
+     <!-- Custom CSS -->
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/css/adminHeader.css}" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Signup Form Styling */
+.signup-container {
+    position: absolute;
+    top: 60%;
+    left: 35%; 
+    width: 30%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.1);
+    background-color:#ffe6ff;
+    padding: 15px;
+    border-radius: 10px;
+    border:2px solid  #4d004d;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+
+.signup-container h2 {
+    color:black;
+    font-size: larger;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align:center;
+    
+}
+
+.signup-container input {
+    display: block;
+    width: 80%;
+    padding: 10px;
+    margin-left: 15px ;
+    border: none;
+    border-radius: 5px;
+}
+
+
+a {
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+label{
+font-weight: bold;
+margin-left:10px;
+margin-bottom:3px;
+
+}
+h2{
+color:black;
+}
+.view-category-btn {
+            position: relative;
+            top: 20px;
+            left: 20px;
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<div th:replace="adminHeader :: adminHeader"></div>
+
+
+    <!-- Video Background -->
+    <video autoplay loop muted playsinline class="background-video">
+        <source src="/video/AddCategory (3).mp4" type="video/mp4">
+       
+    </video>
+   <a th:href="@{/Category/viewCategory}">
+<button type="button" class=" view-category-btn btn btn-warning mt-4">View Category</button>
+</a>
+    <div class="signup-container">
+        <h2>Add Category</h2>
+
+            
+        <p><span style="color: red;">[[${message}]]</span></p>
+        
+        <form th:action="@{/Category/addcategory}" th:object="${categoryForm}" method="post" id="categoryForm">
+    <label>Category Name:</label>
+    <input type="text" th:field="*{categoryName}"  id="categoryName" required /><br/>
+
+    <label>Image URL:</label>
+    <input type="text" th:field="*{image}" id="image" required/><br/>
+
+    <label>Subcategory Name:</label>
+    <input type="text" th:field="*{subcategoryName}" id="subcategoryName" required/><br/>
+    
+    <label>Sub Category image URL:</label>
+    <input type="text" th:field="*{subimage}" id="subimage" required/><br/>
+
+    <input type="submit" value="Add Category" class="btn btn-primary"/>
+        
+    </div>
+
+<script>
+  $(document).ready(function () {
+    // jQuery Validate
+    $("#categoryForm").validate({
+      rules: {
+        categoryName: {
+          required: true,
+          minlength: 3
+        },
+        image: {
+          required: true,
+          url: true
+        },
+        subimage: {
+            required: "Please enter image URL",
+            url: "Enter a valid URL"
+          },
+        subcategoryName: {
+          required: true,
+          minlength: 3
+        }
+      },
+      messages: {
+        categoryName: {
+          required: "Please enter a category name",
+          minlength: "At least 3 characters"
+        },
+        image: {
+          required: "Please enter image URL",
+          url: "Enter a valid URL"
+        },
+        subimage: {
+            required: "Please enter image URL",
+            url: "Enter a valid URL"
+          },
+        subcategoryName: {
+          required: "Please enter a subcategory name",
+          minlength: "At least 3 characters"
+        }
+      },
+      errorElement: "div",
+      errorPlacement: function (error, element) {
+        error.insertAfter(element);
+        error.css("color", "red");
+      }
+    });
+
+    // Reset form if any message is shown
+    const messageText = $("p span").text().trim();
+    if (messageText.length > 0) {
+      $("#categoryForm")[0].reset();
+    }
+  });
+  
+  setTimeout(() => {
+	  $("p span").fadeOut();
+	}, 4000);
+
+</script>
+
+
+</body>
+</html>

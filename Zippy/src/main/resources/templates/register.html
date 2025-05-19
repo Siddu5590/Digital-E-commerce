@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signup Page</title>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .background-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .signup-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .signup-container h2 {
+      color: white;
+      font-size: larger;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .signup-container input {
+      display: block;
+      width: 80%;
+      padding: 10px;
+      margin: 8px auto 2px auto;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .signup-container button {
+      width: 50%;
+      padding: 10px;
+      border: none;
+      background: #ff4757;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    a {
+      color: blue;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    label.error {
+      color: black;
+      font-size: 13px;
+      margin: 2px auto 10px auto;
+      text-align: left;
+      display: block;
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+
+<video autoplay loop muted playsinline class="background-video">
+  <source src="/video/Untitled design.mp4" type="video/mp4" />
+</video>
+
+<div class="signup-container">
+  <h2>Sign Up</h2>
+  <form action="/user/userregister" method="post" id="signup">
+    <input type="text" name="name" id="name" placeholder="Username" />
+
+    <input type="email" name="email" id="email" placeholder="Email" />
+
+    <input type="text" name="phone" id="phone" placeholder="Phone number" />
+
+    <input type="password" name="password" id="password" placeholder="Password" />
+
+    <input type="password" name="cpassword" id="confirm" placeholder="Confirm password" />
+
+    <center>
+      <button type="submit" class="mt-1">Register</button>
+      <p>Already have an account? <a href="/user/login">Please login</a></p>
+    </center>
+  </form>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#signup').validate({
+      rules: {
+        name: {
+          required: true,
+        },
+        email: {
+          required: true,
+          email: true,
+          remote: {
+            url: "/user/checkEmail",
+            type: "GET",
+            data: {
+              email: function () {
+                return $("#email").val();
+              }
+            },
+            dataFilter: function (response) {
+              if (response === "true") {
+                return JSON.stringify(false); 
+              } else {
+                return JSON.stringify(true); 
+              }
+            }
+          }
+        },
+        phone: {
+          required: true,
+          digits: true,
+          minlength: 10,
+          maxlength: 10
+        },
+        password: {
+          required: true,
+          minlength: 6
+        },
+        cpassword: {
+          required: true,
+          equalTo: "#password"
+        }
+      },
+      messages: {
+        name: {
+          required: "Name is required."
+        },
+        email: {
+          required: "Email is required.",
+          email: "Enter a valid email address.",
+          remote: "Email ID already exists."
+        },
+        phone: {
+          required: "Phone number is required.",
+          digits: "Enter only digits.",
+          minlength: "Phone number must be 10 digits.",
+          maxlength: "Phone number must be 10 digits."
+        },
+        password: {
+          required: "Password is required.",
+          minlength: "Password must be at least 6 characters."
+        },
+        cpassword: {
+          required: "Please confirm your password.",
+          equalTo: "Passwords do not match."
+        }
+      },
+      errorPlacement: function (error, element) {
+        error.insertAfter(element);
+      },
+      submitHandler: function (form) {
+        form.submit(); 
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

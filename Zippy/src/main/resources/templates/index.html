@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZippyGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .navbar {
+            background-color: #FFB300; 
+        }
+        .navbar-nav {
+  flex-wrap: wrap;
+}
+        
+        .navbar a {
+            color: white;
+        }
+        .navbar a:hover {
+            color: #f8f9fa;
+        }
+        .navbar-nav {
+            font-size: 20px;
+            gap: 20px;
+        }
+        .navbar-brand img {
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+
+        .carousel {
+            margin-top: 80px; 
+        }
+        .carousel-item img {
+  object-fit: cover;
+  min-height: 300px;
+  max-height: 500px;
+}
+        
+        /* Reduce navbar height */
+.navbar {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+  height:100px;
+  min-height: 30px; /* Optional: limits the minimum height */
+}
+
+/* Shrink nav links spacing */
+.navbar-nav .nav-link {
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+  font-size: 16px; /* Optional: slightly reduce font size */
+}
+
+
+        
+            * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fffdf3;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .head {
+      background: linear-gradient(135deg, #fbbf24, #f97316);
+      color: white;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+
+    .head h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .head p {
+      font-size: 1.2rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .container {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      font-weight:bold;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section h2 {
+      font-size: 2rem;
+      color: #10b981;
+      margin-bottom: 1rem;
+    }
+
+    .about-text {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .about-text .text {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .about-text .image {
+      flex: 1;
+      min-width: 280px;
+      height: 320px;
+      border-radius: 14px;
+      background-color: #fef3c7;
+      background-image: url("aboutimagezippy.jpeg");
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .mission-vision {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 280px;
+      background-color: #ffffff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: #ef4444;
+      margin-bottom: 0.8rem;
+      font-size: 1.5rem;
+    }
+
+    .card p {
+      color: #4b5563;
+    }
+
+    footer {
+      background-color: #1f2937;
+      color: #fff;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 3rem;
+    }
+    
+    .head {
+  background: linear-gradient(135deg, #fbbf24, #f97316);
+  color: white;
+  padding: 1.5rem 1rem; /* Reduced from 2.5rem */
+  text-align: center;
+}
+
+.about-text .image {
+  flex: 1;
+  min-width: 280px;
+  height: 270px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-text .image img {
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+.background-video1{
+  height: 65px;
+  width: 65px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid white;
+  
+}
+#servicepara{
+font-size:small;
+text-align: justify;
+}
+    @media (max-width: 576px) {
+  .head h1 {
+    font-size: 2rem;
+  }
+
+  .head p, .card h4, .card p {
+    font-size: 0.9rem;
+  }
+
+  .navbar-nav {
+    font-size: 16px;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+}
+    
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/zippy/}">
+			<video autoplay loop muted playsinline class="background-video1">
+				<source src="/video/logofinal.mp4" type="video/mp4" />
+			</video>
+	  </a>
+            
+            
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-5">
+                    <li class="nav-item"><a class="nav-link text-white" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#footer">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link text-white btn btn-outline-success ms-2" href="/user/login">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/034/078/501/small_2x/shopping-cart-full-of-product-in-grocery-store-generative-ai-photo.jpg" class="d-block w-100" alt="Shopping Cart">
+            </div>
+            <div class="carousel-item">
+                <img src="https://static.vecteezy.com/system/resources/previews/050/054/373/non_2x/close-up-of-hand-holding-smartphone-in-grocery-store-free-photo.jpg" class="d-block w-100" alt="Smartphone Shopping">
+            </div>
+            <div class="carousel-item">
+                <img src="https://www.icoderzsolutions.com/blog/wp-content/uploads/2019/06/Grocery-App-Development-In-Home-Delivery_-Walmart%E2%80%99s-Next-Big-Move.jpg" class="d-block w-100" alt="Grocery App">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    
+    <div id="services" class="container mt-5 mb-5">
+        <h1 class="text-center text-warning">Our Services</h1>
+        
+        <div class="row d-flex justify-content-center gap-3">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="https://deerdesigner.com/wp-content/uploads/2024/05/Article-34-ecommerce-design-01.png.webp" class="card-img-top" alt="Service 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Service 1</h5>
+                        <h4 class="card-text">Quick and easy shopping experience with our top-tier services.</h4>
+                        <p id="servicepara">Enjoy a quick and easy shopping experience with our top-tier services. From seamless browsing to fast checkout, we make every step effortless. Shop with confidence and convenience, all in one place.</p>
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="https://img.freepik.com/premium-photo/smart-scooter-delivery-with-realtime-gps-tracking-mobile-app-integration-fast-reliable_1293074-119842.jpg" class="card-img-top" alt="Service 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Service 2</h5>
+                        <h4 class="card-text">Fast and reliable delivery with real-time tracking.</h4>
+                        <p id="servicepara">Get your orders fast with our reliable delivery service and real-time tracking. Stay updated every step of the way, from dispatch to doorstep. We ensure your purchases arrive safely and on time.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <img src="https://document360.com/wp-content/uploads/2022/11/How_to_Provide_247_Customer_Service_with_Tips__Benefits-scaled.jpg" class="card-img-top" alt="Service 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Service 3</h5>
+                        <h4 class="card-text">24/7 customer support to assist you anytime, anywhere. </h4>
+                        <p id="servicepara">We're here for you 24/7 with dedicated customer support whenever you need it. Whether you have questions or need help, our team is always ready to assist. Enjoy peace of mind with round-the-clock service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="about">
+  <header class="head">
+    <h1>About ZippyGo</h1>
+    <p>Your trusted partner for delivering farm-fresh fruits and vegetables right to your doorstep.</p>
+  </header>
+
+  <div class="container">
+    <!-- About Section -->
+    <section class="section about-text">
+      <div class="text">
+        <h2>Who We Are</h2>
+        <p>At ZippyGo, we believe fresh is not just a flavor — it’s a lifestyle. Our journey began with a dream to reconnect people with the goodness of nature. By working closely with local farmers, we ensure every delivery is packed with freshness, flavor, and nutrients.</p>
+        <p>From crunchy greens to juicy seasonal fruits, we curate the best picks daily and bring them to your home with care, speed, and a smile.</p>
+      </div>
+     <div class="image">
+  <img src="/images/aboutimagezippy.jpeg" alt="About ZippyGo">
+</div>
+
+    </section>
+
+    <!-- Mission and Vision -->
+    <section class="section mission-vision">
+      <div class="card">
+        <h3>🌿 Our Mission</h3>
+        <p>To create a healthier world by making it simple and joyful for everyone to eat fresh, seasonal, and locally-grown produce — delivered straight from the farm to their doorstep.</p>
+      </div>
+      <div class="card">
+        <h3>🌞 Our Vision</h3>
+        <p>To become the most beloved farm-to-home delivery service in the world, cultivating healthier communities and a more sustainable planet through every delivery.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 ZippyGo. Handpicked with love, delivered with care.</p>
+  </footer>
+  </div>
+    
+    <section id="footer" class="float-start w-100">
+    <footer class="text-white pt-5 pb-4" style="background-color: #131f34;">
+        <div class="container text-center text-md-start">
+            <div class="row">
+                
+                <!-- Company Info -->
+                <div class="col-md-3">
+                    <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">ZippyGo</h5>
+                    <p>Expertly managing events with precision, creativity, and a seamless experience from concept to execution.</p>
+                </div>
+                
+                <!-- Links -->
+                <div class="col-md-3">
+                    <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Products</h5>
+                    <p><a href="#" class="text-decoration-none text-white">Fruits & Vegitables</a></p>
+                    <p><a href="#" class="text-decoration-none text-white">Home Appliences</a></p>
+                    <p><a href="#" class="text-decoration-none text-white">Electronics</a></p>
+                </div>
+                
+                <!-- Useful Links -->
+                <div class="col-md-3">
+                    <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Useful Links</h5>
+                    <p><a href="#" class="text-decoration-none text-white">Your Account</a></p>
+                    <p><a href="#services" class="text-decoration-none text-white">Services</a></p>
+                    <p><a href="#" class="text-decoration-none text-white">Shipping Rates</a></p>
+                    <p><a href="#" class="text-decoration-none text-white">Help</a></p>
+                </div>
+                
+                <!-- Contact -->
+                <div class="col-md-2">
+                    <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Contact</h5>
+                    <p><i class="fas fa-home me-2"></i> Vijaynagar, Bangalore</p>
+                     <p><i class="fas fa-envelope me-2"></i><a href="mailto:zippygo@gmail.com" class="text-white text-decoration-none">  zippygo.com</a></p>
+                    <p><i class="fas fa-phone me-2"></i> +91-98861892681</p>
+                    <p><i class="fas fa-print me-2"></i> +91-98861892682</p>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Social Media Links -->
+            <div class="row align-items-center text-center">
+                <div class="col-12">
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="https://www.facebook.com" target="_blank" class="btn btn-outline-warning text-white" role="button">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://www.twitter.com" target="_blank" class="btn btn-outline-warning text-white" role="button">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.google.com" target="_blank" class="btn btn-outline-warning text-white" role="button">
+                            <i class="fab fa-google"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" class="btn btn-outline-warning text-white" role="button">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Copyright Content Centered -->
+            <div class="row text-center">
+                <div class="col-12">
+                    <p>&copy; 2024 Copyright: <a href="#" class="text-white text-decoration-none"><strong>zippygo.com</strong></a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</section>
+
+        
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
