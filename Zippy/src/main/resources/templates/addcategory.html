@@ -1,188 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    
-     <!-- Custom CSS -->
-  <link rel="stylesheet" type="text/css" th:href="@{/assets/css/adminHeader.css}" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <style>
-.background-video {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
+  <meta charset="UTF-8">
+  <title>Add Category</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-/* Signup Form Styling */
-.signup-container {
-    position: absolute;
-    top: 60%;
-    left: 35%; 
-    width: 30%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.1);
-    background-color:#ffe6ff;
-    padding: 15px;
-    border-radius: 10px;
-    border:2px solid  #4d004d;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
+  <!-- Bootstrap & jQuery -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+  <link rel="stylesheet" th:href="@{/assets/css/adminHeader.css}" />
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-.signup-container h2 {
-    color:black;
-    font-size: larger;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align:center;
-    
-}
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url('https://cm.magefan.com/magefan_blog/programmatically-add-products-to-categories_1.png') no-repeat center center fixed;
+      background-size: cover;
+    }
 
-.signup-container input {
-    display: block;
-    width: 80%;
-    padding: 10px;
-    margin-left: 15px ;
-    border: none;
-    border-radius: 5px;
-}
+    .container-wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 15px;
+    }
 
+    .form-card {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 30px;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-a {
-    color: blue;
-    text-decoration: none;
-    font-weight: bold;
-}
+    .form-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    }
 
-a:hover {
-    text-decoration: underline;
-}
-label{
-font-weight: bold;
-margin-left:10px;
-margin-bottom:3px;
+    .form-card h2 {
+      text-align: center;
+      color: #3b0066;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
 
-}
-h2{
-color:black;
-}
-.view-category-btn {
-            position: relative;
-            top: 20px;
-            left: 20px;
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
+    label {
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
 
+    .form-control {
+      border-radius: 8px;
+    }
 
+    .btn-primary {
+      background-color: #4b0082;
+      border-color: #4b0082;
+    }
 
-    </style>
+    .btn-primary:hover {
+      background-color: #5d00b3;
+      border-color: #5d00b3;
+    }
+
+    .corner-buttons {
+      position: absolute;
+      top: 75px;
+      left: 0;
+      right: 0;
+      width: 100%;
+      padding: 0 15px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      z-index: 10;
+    }
+
+    .corner-buttons a {
+      white-space: nowrap;
+    }
+
+    .error {
+      color: #d60000;
+      font-size: 0.875rem;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 20px;
+      }
+
+      .corner-buttons {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+        top: 60px;
+      }
+
+      .corner-buttons a {
+        font-size: 0.9rem;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
+
 <body>
+
+<!-- Header -->
 <div th:replace="adminHeader :: adminHeader"></div>
 
+<!-- Corner Navigation Buttons -->
+<div class="corner-buttons">
+  <a th:href="@{/Category/viewCategory}" class="btn btn-warning">← View Categories</a>
+  <a th:href="@{/user/Home}" class="btn btn-outline-light">Back to Dashboard →</a>
+</div>
 
-    <!-- Video Background -->
-    <video autoplay loop muted playsinline class="background-video">
-        <source src="/video/AddCategory (3).mp4" type="video/mp4">
-       
-    </video>
-   <a th:href="@{/Category/viewCategory}">
-<button type="button" class=" view-category-btn btn btn-warning mt-4">View Category</button>
-</a>
-    <div class="signup-container">
-        <h2>Add Category</h2>
+<!-- Category Form Container -->
+<div class="container-wrapper">
+  <div class="form-card">
+    <h2>Add Category</h2>
+    <p class="text-center text-danger fw-bold">[[${message}]]</p>
 
-            
-        <p><span style="color: red;">[[${message}]]</span></p>
-        
-        <form th:action="@{/Category/addcategory}" th:object="${categoryForm}" method="post" id="categoryForm">
-    <label>Category Name:</label>
-    <input type="text" th:field="*{categoryName}"  id="categoryName" required /><br/>
+    <form th:action="@{/Category/addcategory}" th:object="${categoryForm}" method="post" id="categoryForm">
+      <div class="mb-3">
+        <label for="categoryName">Category Name</label>
+        <input type="text" th:field="*{categoryName}" class="form-control" id="categoryName" required />
+      </div>
 
-    <label>Image URL:</label>
-    <input type="text" th:field="*{image}" id="image" required/><br/>
+      <div class="mb-3">
+        <label for="image">Image URL</label>
+        <input type="text" th:field="*{image}" class="form-control" id="image" required />
+      </div>
 
-    <label>Subcategory Name:</label>
-    <input type="text" th:field="*{subcategoryName}" id="subcategoryName" required/><br/>
-    
-    <label>Sub Category image URL:</label>
-    <input type="text" th:field="*{subimage}" id="subimage" required/><br/>
+      <div class="mb-3">
+        <label for="subcategoryName">Subcategory Name</label>
+        <input type="text" th:field="*{subcategoryName}" class="form-control" id="subcategoryName" required />
+      </div>
 
-    <input type="submit" value="Add Category" class="btn btn-primary"/>
-        
-    </div>
+      <div class="mb-3">
+        <label for="subimage">Subcategory Image URL</label>
+        <input type="text" th:field="*{subimage}" class="form-control" id="subimage" required />
+      </div>
 
+      <div class="d-grid mt-4">
+        <input type="submit" value="Add Category" class="btn btn-primary" />
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- JavaScript Validation -->
 <script>
   $(document).ready(function () {
-    // jQuery Validate
     $("#categoryForm").validate({
       rules: {
-        categoryName: {
-          required: true,
-          minlength: 3
-        },
-        image: {
-          required: true,
-          url: true
-        },
-        subimage: {
-            required: "Please enter image URL",
-            url: "Enter a valid URL"
-          },
-        subcategoryName: {
-          required: true,
-          minlength: 3
-        }
+        categoryName: { required: true, minlength: 3 },
+        image: { required: true, url: true },
+        subcategoryName: { required: true, minlength: 3 },
+        subimage: { required: true, url: true }
       },
       messages: {
-        categoryName: {
-          required: "Please enter a category name",
-          minlength: "At least 3 characters"
-        },
-        image: {
-          required: "Please enter image URL",
-          url: "Enter a valid URL"
-        },
-        subimage: {
-            required: "Please enter image URL",
-            url: "Enter a valid URL"
-          },
-        subcategoryName: {
-          required: "Please enter a subcategory name",
-          minlength: "At least 3 characters"
-        }
+        categoryName: { required: "Please enter a category name", minlength: "At least 3 characters" },
+        image: { required: "Please enter image URL", url: "Enter a valid URL" },
+        subcategoryName: { required: "Please enter a subcategory name", minlength: "At least 3 characters" },
+        subimage: { required: "Please enter subcategory image URL", url: "Enter a valid URL" }
       },
       errorElement: "div",
       errorPlacement: function (error, element) {
         error.insertAfter(element);
-        error.css("color", "red");
       }
     });
 
-    // Reset form if any message is shown
-    const messageText = $("p span").text().trim();
-    if (messageText.length > 0) {
-      $("#categoryForm")[0].reset();
-    }
+    // Fade out message
+    setTimeout(() => {
+      $("p.text-danger").fadeOut();
+    }, 4000);
   });
-  
-  setTimeout(() => {
-	  $("p span").fadeOut();
-	}, 4000);
-
 </script>
-
 
 </body>
 </html>

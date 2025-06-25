@@ -1,176 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-</head>
-<style>
-@charset "UTF-8";
-/* Fullscreen Video Background */
-.background-video {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
-/* Signup Form Styling */
-.signup-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 30%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
-
-.signup-container h2 {
-    color: white;
-    font-size: larger;
-    font-weight: bold;
-    text-transform: uppercase;
-    
-}
-
-.signup-container input {
-    display: block;
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    position: relative;
-    left: 30px;
-}
-
-.signup-container button {
-    width: 50%;
-    padding: 10px;
-    border: none;
-    background: #ff4757;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-a {
-    color: blue;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-.error {
-      color: black;
-	  font-size: 13px;
-	  margin: 2px auto 10px auto; 
-	  text-align: left;
-	  width: 80%;
-      
-      
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
     }
 
+  .background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  object-fit: cover;
+  z-index: -1;
+  pointer-events: none;
+}
 
-</style>
+    .form-container {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem 1.5rem;
+    }
+
+    .form-control {
+      background-color: rgba(255, 255, 255, 0.9);
+      border: none;
+      color: #333;
+    }
+
+    .form-control:focus {
+      box-shadow: none;
+      border-color: #ff4757;
+    }
+
+    .btn-custom {
+      background-color: #ff4757;
+      color: white;
+    }
+
+    .btn-custom:hover {
+      background-color: #e8413f;
+    }
+
+    .back-btn {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    label.error {
+      color: #ffc107;
+      font-size: 13px;
+      margin-top: 5px;
+      display: block;
+      text-align: left;
+    }
+
+    @media (max-width: 576px) {
+      .card {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
 <body>
 
-    <!-- Video Background -->
-    <video autoplay loop muted playsinline class="background-video">
-        <source src="/video/Untitled design.mp4" type="video/mp4">
-       
-    </video>
+  <!-- Background Video -->
+  <video autoplay loop muted playsinline class="background-video">
+    <source src="/video/Untitled design.mp4" type="video/mp4" />
+  </video>
 
-    <!-- Signup Form -->
-    <div class="signup-container">
-        <h2>Login</h2>
-        <h5 class="text-center text-danger">[[${message}]]</h5>
-        <form action="/user/Home" method="post" id=login>
-            
-            <input type="email" name="email" placeholder="Email" id="email">
-            <div class="error" id="emailError"></div>
-          
-            <input type="password" name="password" placeholder="Password" id="password">
-            <div class="error" id="passwordError"></div>
-          
+  <!-- Form Container -->
+  <div class="container-fluid form-container">
+    <div class="card shadow-lg">
+      
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="/" class="back-btn text-dark"><i class="bi bi-arrow-left"></i> Back to Home</a>
+        
+        <span></span> <!-- Empty span for spacing -->
+      </div>
+      <h4 class="m-0 text-white text-uppercase text-center mb-1">Login</h4>
 
+      <h6 class="text-danger text-center">[[${message}]]</h6>
 
-           <a href="userpage"> <button type="submit">Login</button></a>
-            <p>Forgot password? <a href="forgot">forgot password</a></p>
-            <p>No Account Please Register <a href="register">SignUp</a></p>
+      <form action="/user/Home" method="post" id="loginForm" novalidate>
+        <div class="mb-3">
+          <input type="email" class="form-control" name="email" id="email" placeholder="Email" />
+        </div>
 
-       <!--      <button type="submit">Login</button>
-            <p>Forgot password? <a href="forgot">forgot password</a></p>
-            <p>Don't have an Account? <a href="register">SignUp</a></p>-->
+        <div class="mb-3">
+          <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+        </div>
 
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-custom">Login</button>
+        </div>
 
-
-        </form>
+        <div class="text-center">
+          <p class="mb-1">
+            <a th:href="@{/user/forgot}" class="text-white text-decoration-underline">Forgot password?</a>
+          </p>
+          <p class="mb-0">
+            Don't have an Account? <a th:href="@{/user/register}" class="text-light text-decoration-underline">Sign Up</a>
+          </p>
+        </div>
+      </form>
     </div>
-    
-    <script>
-  $(document).ready(function () {
-    $('#login').validate({
-      rules: {
-        email: {
-          required: true,
-          email: true,
-          remote: {
-            url: "/user/checkEmail",
-            type: "GET",
-            data: {
-              email: function () {
-                return $("#email").val();
-              }
-            },
-            dataFilter: function (response) {
-              if (response === "true") {
-                return JSON.stringify(true); 
-              } else {
-                return JSON.stringify(false); 
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery Validate -->
+  <script>
+    $(document).ready(function () {
+      $("#loginForm").validate({
+        rules: {
+          email: {
+            required: true,
+            email: true,
+            remote: {
+              url: "/user/checkEmail",
+              type: "GET",
+              data: {
+                email: function () {
+                  return $("#email").val();
+                }
+              },
+              dataFilter: function (response) {
+                return response === "true" ? "true" : "false";
               }
             }
+          },
+          password: {
+            required: true,
+            minlength: 6
           }
         },
-        password: {
-          required: true,
-          minlength: 6
-        }
-      },
-      messages: {
-        email: {
-          required: "Email is required.",
-          email: "Enter a valid email address.",
-          remote: "Email Not Found."
+        messages: {
+          email: {
+            required: "Email is required.",
+            email: "Enter a valid email.",
+            remote: "Email not found."
+          },
+          password: {
+            required: "Password is required.",
+            minlength: "At least 6 characters."
+          }
         },
-        password: {
-          required: "Password is required.",
-          minlength: "Password must be at least 6 characters."
+        errorPlacement: function (error, element) {
+          error.insertAfter(element);
+        },
+        submitHandler: function (form) {
+          form.submit();
         }
-        
-      },
-      errorPlacement: function (error, element) {
-        error.insertAfter(element);
-      },
-      submitHandler: function (form) {
-        form.submit(); 
-      }
+      });
     });
-  });
-</script>
+  </script>
 
 </body>
 </html>

@@ -87,26 +87,5 @@ public class UserServiceImpl implements UserService {
 		return prepo.findAll();
 	}
 
-/*	@Override
-	public String forgotPassword(String email, String password) {
-		String status = "";
-		boolean result = urepo.existsByEmail(email);
-		if (result) {
-			int i = urepo.updatePassword(email, password);
-			if (i > 0) {
-				status = "success";
-				System.out.println(status);
-			} else {
-				status = "updatation failure";
-				System.out.println(status);
-			}
-		} else {
-			System.out.println("No such mail found");
-			status = "failure";
-			System.out.println(status);
-		}
-		return status;
-	}
-	
-*/
+
 }

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
 
     <!-- Bootstrap CSS -->
@@ -10,90 +11,91 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" />
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- Custom JS -->
     <script th:src="@{/assets/js/cart.js}"></script>
+
+    <style>
+      .cart-item {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        background-color: #fff;
+      }
+      .cart-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .strike-text {
+        text-decoration: line-through;
+        color: gray;
+        font-size: 0.9rem;
+      }
+    </style>
 </head>
 
-<body>
+<body class="bg-light">
 
-<!-- Header Include -->
+<!-- Header -->
 <div th:replace="header :: header"></div>
 
-<!-- Main Container -->
-<div class="container mt-5 text-center">
-
-    <h3>Your Cart</h3>
-
-    <!-- If Cart is Empty -->
-    <div class="fs-4" th:if="${#lists.isEmpty(cartItems)}">
-        <img src="https://st.depositphotos.com/1431107/2316/v/950/depositphotos_23163822-stock-illustration-oops-vector-smiley.jpg" width="300" height="200">
-        <h3>Your cart is empty.</h3>
-    </div>
-
+<!-- Empty Cart -->
+<div class="container mt-5 text-center" th:if="${#lists.isEmpty(cartItems)}">
+    <img src="https://st.depositphotos.com/1431107/2316/v/950/depositphotos_23163822-stock-illustration-oops-vector-smiley.jpg" width="300" height="200">
+    <h3>Your cart is empty.</h3>
+    <a th:href="@{user/Home}" class="btn btn-outline-primary mt-3">Continue Shopping</a>
 </div>
 
-<!-- Cart Table if Cart is Not Empty -->
-<div class="table-responsive m-4">
-    <table class="table table-bordered text-center" th:if="${not #lists.isEmpty(cartItems)}">
-        <thead class="table-dark">
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="item : ${cartItems}">
-                <td><img th:src="@{${item.product.pimg}}" width="60"></td>
-                <td th:text="${item.product.pname}"></td>
-                <td>
-                    <strike>&#8377;[[${item.product.pprice}]]</strike>
-                    <strong th:text="'&#8377;' + ${#numbers.formatDecimal(item.product.pprice - item.product.pdiscount, 2, 2)}"></strong>
-                </td>
-                <td>
-                    <div class="input-group justify-content-center align-items-center">
+<!-- Cart Items -->
+<div class="container mt-4" th:if="${not #lists.isEmpty(cartItems)}">
+    <h4 class="mb-4 text-center">Your Cart</h4>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-1 g-3">
+        <div class="col" th:each="item : ${cartItems}">
+            <div class="cart-item d-flex flex-column flex-sm-row align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <img th:src="@{${item.product.pimg}}" class="cart-img" alt="Product Image">
+                    <div>
+                        <h6 class="mb-1" th:text="${item.product.pname}"></h6>
+                        <div class="strike-text">&#8377;<span th:text="${item.product.pprice}"></span></div>
+                        <strong class="text-success">&#8377;<span th:text="${item.product.pprice - item.product.pdiscount}"></span></strong>
+                    </div>
+                </div>
+                <div class="text-center my-2 my-sm-0">
+                    <div class="input-group">
                         <button class="btn btn-outline-secondary" th:onclick="updateQty([[${item.product.id}]], 'decrease')">-</button>
                         <span class="px-3 fw-bold" id="qty-[[${item.product.id}]]">[[${item.quantity}]]</span>
                         <button class="btn btn-outline-secondary" th:onclick="updateQty([[${item.product.id}]], 'increase')">+</button>
                     </div>
-                </td>
-                <td id="item-total-[[${item.product.id}]]" th:text="'&#8377;' + ${item.totalPrice}"></td>
-                <td>
-                    <form th:action="@{'/cart/remove/' + ${item.id}}" method="post">
+                </div>
+                <div class="text-center mt-2 mt-sm-0">
+                    <div id="item-total-[[${item.product.id}]]" th:text=" ${item.totalPrice}" class="fw-bold"></div>
+                    <form th:action="@{'/cart/remove/' + ${item.id}}" method="post" class="mt-1">
                         <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                     </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Total Amount -->
-    <h5 class="m-3">
-        <span th:if="${total > 1000}" class="badge bg-danger">10% OFF</span>
-        Total:
-        <span th:if="${total > 1000}" class="text-decoration-line-through me-2" id="cart-total">
-            &#8377;[[${total}]]
-        </span>
-        <span th:text="'&#8377;' + ${discountedTotal}"></span>
-    </h5>
-
-    <!-- Action Buttons -->
-    <div class="d-flex justify-content-end m-4">
-        <a th:href="@{user/Home}" class="btn btn-primary m-3">Continue Shopping</a>
-
-        <!-- Checkout button visible only if cart is not empty -->
-        <div th:if="${not #lists.isEmpty(cartItems)}">
-            <button type="button" class="btn btn-success m-3" data-bs-toggle="modal" data-bs-target="#checkoutModal">
+    <!-- Summary & Buttons -->
+    <div class="row mt-4 mb-3">
+        <div class="col-12 text-end">
+            <h5>
+                <span th:if="${total > 1000}" class="badge bg-danger">10% OFF</span>
+                Total:
+                <span th:if="${total > 1000}" class="text-decoration-line-through me-2">
+                    &#8377;[[${total}]]
+                </span>
+                <span th:text=" ${discountedTotal}" class="fw-bold fs-5"></span>
+            </h5>
+            <a th:href="@{user/Home}" class="btn btn-outline-primary mt-3">Continue Shopping</a>
+            <button type="button" class="btn btn-success mt-3 ms-2" data-bs-toggle="modal" data-bs-target="#checkoutModal">
                 Proceed to Checkout
             </button>
         </div>
@@ -101,144 +103,89 @@
 </div>
 
 <!-- Checkout Modal -->
-<div class="modal fade mt-5 mb-5" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true" data-bs-backdrop="static"
+     data-bs-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-
             <div class="modal-header">
                 <h5 class="modal-title" id="checkoutModalLabel">Checkout</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
-                <h5>Product Details:</h5>
-                <ul th:each="item : ${cartItems}" style="list-style: none;">
-                    <li>
-                        <img th:src="@{${item.product.pimg}}" width="40" height="40">
-                    </li>
-                    <li th:text="'Product: ' + ${item.product.pname} + ', Quantity: ' + ${item.quantity} + ', Price: ' + ${item.totalPrice}"></li>
-                </ul>
-
-                <!-- Checkout Form -->
                 <form id="orderForm" th:action="@{/order/place}" method="post" onsubmit="return handleOrderSubmit()">
                     <div class="mb-3">
-                        <label for="deliveryAddress" class="form-label">Delivery Address</label>
-                        <input type="text" class="form-control" id="deliveryAddress" name="deliveryAddress" required>
+                        <label class="form-label">Delivery Address</label>
+                        <input type="text" class="form-control" name="deliveryAddress" required>
                     </div>
                     <div class="mb-3">
-                        <label for="paymentMode" class="form-label">Payment Mode</label>
-                        <select class="form-select" id="paymentMode" name="paymentMode" required>
-                            <option value="" selected disabled>--Select Payment--</option>
+                        <label class="form-label">Payment Mode</label>
+                        <select class="form-select" name="paymentMode" required>
+                            <option value="" disabled selected>--Select Payment--</option>
                             <option value="COD">Cash on Delivery</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label for="captchaInput">Enter CAPTCHA:</label>
-                        <canvas id="captchaCanvas" width="150" height="50" class="bg-outline-primary"></canvas><br/>
-                        <input type="text" id="captchaInput" placeholder="Enter CAPTCHA" required />
+                    <div class="mb-3">
+                        <label>Enter CAPTCHA:</label>
+                        <canvas id="captchaCanvas" width="150" height="50" class="mb-2"></canvas><br>
+                        <input type="text" id="captchaInput" class="form-control d-inline-block w-75" placeholder="Enter CAPTCHA" required>
                         <button type="button" onclick="generateCaptcha()" class="btn btn-outline-secondary">🔄</button>
                         <input type="hidden" id="actualCaptcha" />
                     </div>
-
-                    <button type="submit" class="btn btn-primary mt-3">Place Order</button>
+                    <button type="submit" class="btn btn-primary w-100">Place Order</button>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 
 <!-- SweetAlert2 Messages -->
 <script th:inline="javascript">
-    /*<![CDATA[*/
     let successMessage = '[[${success}]]';
     let errorMessage = '[[${error}]]';
-
     if (successMessage && successMessage !== 'null') {
-        Swal.fire({
-            title: 'Success!',
-            text: successMessage,
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
+        Swal.fire('Success!', successMessage, 'success');
     }
-
     if (errorMessage && errorMessage !== 'null') {
-        Swal.fire({
-            title: 'Error!',
-            text: errorMessage,
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
+        Swal.fire('Error!', errorMessage, 'error');
     }
-    /*]]>*/
 
     let generatedCaptcha = "";
-
     function generateCaptcha() {
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%!";
         generatedCaptcha = "";
-        for (let i = 0; i < 6; i++) {
-            generatedCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-
+        for (let i = 0; i < 6; i++) generatedCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
         const canvas = document.getElementById("captchaCanvas");
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.font = "20px Arial";
-        ctx.fillStyle = "#000";
         ctx.fillText(generatedCaptcha, 10, 30);
     }
-
     function validateCaptcha() {
-        const userInput = document.getElementById("captchaInput").value.trim();
-
-        if (userInput !== generatedCaptcha) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid CAPTCHA',
-                text: 'Please enter the correct CAPTCHA!',
-            });
+        const input = document.getElementById("captchaInput").value.trim();
+        if (input !== generatedCaptcha) {
+            Swal.fire('Invalid CAPTCHA', 'Please enter the correct CAPTCHA!', 'error');
             generateCaptcha();
             document.getElementById("captchaInput").value = "";
             return false;
         }
-
         return true;
     }
-
     function handleOrderSubmit() {
-        if (!validateCaptcha()) {
-            return false;
-        }
-
+        if (!validateCaptcha()) return false;
         Swal.fire({
             title: 'Placing your order...',
-            html: `
-                <img src="https://i.gifer.com/YCZH.gif" width="300" height="100" alt="Loading...">
-                <p class="text-muted">Please wait while we process your order.</p>
-            `,
+            html: `<img src="https://i.gifer.com/YCZH.gif" width="300" height="100"><p>Please wait...</p>`,
             allowOutsideClick: false,
-            allowEscapeKey: false,
             showConfirmButton: false,
             didOpen: () => {
                 Swal.showLoading();
-                document.getElementById("orderForm").submit(); // submit programmatically
+                document.getElementById("orderForm").submit();
             }
         });
-
-        return false; // prevent default form submission
+        return false;
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        generateCaptcha();
-    });
-
-    document.getElementById('checkoutModal').addEventListener('shown.bs.modal', function () {
-        generateCaptcha();
-    });
+    document.addEventListener("DOMContentLoaded", generateCaptcha);
+    document.getElementById('checkoutModal').addEventListener('shown.bs.modal', generateCaptcha);
 </script>
 
 </body>

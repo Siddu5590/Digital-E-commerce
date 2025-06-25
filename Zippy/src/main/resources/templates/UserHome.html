@@ -1,275 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>ZippyGo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <meta charset="UTF-8">
+  <title>ZippyGo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- CSS & JS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Local CSS/JS -->
+  <link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" />
+  <script th:src="@{/assets/js/cart.js}"></script>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom Styling -->
+  <style>
+    @media (max-width: 576px) {
+      .card {
+        width: 12rem !important;
+      }
+      .card img {
+        height: 150px !important;
+      }
+      .lowest-prices h5 {
+        font-size: 1rem;
+      }
+    }
 
-<!-- CSS file path -->
-<link rel="stylesheet" type="text/css" th:href="@{/assets/css/style.css}" />
+    .scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background-color: black;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      opacity: 0.8;
+      transition: opacity 0.2s ease-in-out;
+    }
 
-<!-- Javascript file path -->
-<script th:src="@{/assets/js/cart.js}"></script>
+    .scroll-btn:hover {
+      opacity: 1;
+    }
 
+    .left-btn { left: 10px; }
+    .right-btn { right: 10px; }
+    
+    
 
+    /* ✅ Responsive One-Line Alert */
+    #cart-success-alert {
+      white-space: nowrap;
+      text-align: center;
+      font-weight: 500;
+      padding: 8px 16px;
+      max-width: 90%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
 </head>
-
 <body>
 
-	<!-- Header -->
-	<div th:replace="header :: header"></div>
+  <!-- Header -->
+  <div th:replace="header :: header"></div>
 
-	
+  <!-- Lowest Price Banner -->
+  <div class="lowest-prices text-center p-3 text-light" style="background: rgba(0, 0, 0, 0.5);">
+    <h5>LOWEST PRICES</h5>
+    <h5>
+      "Hey you 👀... <br>
+      Don’t just scroll past me like I’m any ordinary item. <br>
+      I’m cute, useful, and 100% ready to spice up your life 💁‍♀️ <br>
+      Go ahead... click Add to Cart — let’s make some magic happen 💫"
+    </h5>
+  </div>
 
-	<!-- Lowest Prices Banner -->
-	<div class="lowest-prices text-center p-3">
-		<h5>LOWEST PRICES</h5>
-		<h5>
-			"Hey you 👀... <br> Don’t just scroll past me like I’m any
-			ordinary item. <br> I’m cute, useful, and 100% ready to spice up
-			your life 💁‍♀️ <br> Go ahead... click Add to Cart — let’s make
-			some magic happen 💫"
-		</h5>
-
-	</div>
-	
-	
-	<!--All Category card -->
-	<h2 class="bg-warning-subtle p-2 m-2 text-dark rounded-1">Top Rated Categories...</h2>
-
-<div class="position-relative m-2">
-
-	<!-- Scrollable Category List -->
-	<div id="categoryScroll" class="d-flex overflow-auto px-3 py-4 gap-3"
-		style="scroll-snap-type: x mandatory; scroll-behavior: smooth;">
-
-		<!-- Category cards -->
-		<div class="flex-shrink-0" style="width: 10rem; scroll-snap-align: start;" th:each="ob : ${clist}">
-			<a th:href="@{/product/getproduct(categoryId=${ob.id})}">
-				<img th:src="@{${ob.img}}"
-					style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" />
-			</a>
-			<p class="mt-2 fw-bold text-center" th:text="${ob.name}"></p>
-		</div>
-
-	</div>
-
-	<!-- Left Arrow Button -->
-	<button onclick="scrollLeft()" class="scroll-btn left-btn">
-		&#10094;
-	</button>
-
-	<!-- Right Arrow Button -->
-	<button onclick="scrollRight()" class="scroll-btn right-btn">
-		&#10095;
-	</button>
-</div>
-
-
-
-
-	<div class="banner position-relative text-white text-center" style=" background-size: cover; background-position: center; height: 300px;">
-    <div class="banner-content p-5" style="background: rgba(0, 0, 0, 0.5); height: 100%;">
-        <h1 class="display-5 fw-bold">Delicious Food Delivered Fast</h1>
-        <p class="lead">Order now and get 20% off on your first order!</p>
-        <a href="#" class="btn btn-warning">Order Now</a>
+  <!-- Top Categories -->
+  <h2 class="bg-warning-subtle p-2 m-2 text-dark rounded-1">Top Rated Categories...</h2>
+  <div class="position-relative m-2">
+    <div id="categoryScroll" class="d-flex overflow-auto px-3 py-4 gap-3" style="scroll-snap-type: x mandatory; scroll-behavior: smooth;">
+      <div class="flex-shrink-0" style="width: 10rem; scroll-snap-align: start;" th:each="ob : ${clist}">
+        <a th:href="@{/product/getproduct(categoryId=${ob.id})}">
+          <img th:src="@{${ob.img}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" />
+        </a>
+        <p class="mt-2 fw-bold text-center" th:text="${ob.name}"></p>
+      </div>
     </div>
-</div>
+    <button onclick="scrollLeft()" class="scroll-btn left-btn">&#10094;</button>
+    <button onclick="scrollRight()" class="scroll-btn right-btn">&#10095;</button>
+  </div>
 
+  <!-- Banner Section -->
+  <div class="banner position-relative text-white text-center" style="background-size: cover; background-position: center; height: 300px;">
+    <div class="banner-content p-5" style="background: rgba(0, 0, 0, 0.5); height: 100%;">
+      <h1 class="display-5 fw-bold">Delicious Food Delivered Fast</h1>
+      <p class="lead">Order now and get 20% off on your first order!</p>
+      <a href="#" class="btn btn-warning">Order Now</a>
+    </div>
+  </div>
+  
 
-
-
+  <!-- Row 1: First 10 Random Products -->
+<h4 class="ms-3 mt-4 fw-bold">Top Picks for You</h4>
 <div class="d-flex overflow-auto px-3 py-4 gap-3 m-2" style="scroll-snap-type: x mandatory;">
-
-  <!-- Each product card -->
-  <div class="card flex-shrink-0" style="width: 15rem; scroll-snap-align: start;"
-       th:each="ob : ${list}" th:if="${ob.category.name == 'Beauty'}">
-
+  <div class="card flex-shrink-0" style="width: 15rem; scroll-snap-align: start;" th:each="ob : ${list}">
     <div class="position-relative">
-      <a th:href="@{'/product/' + ${ob.id}}">
-        <img th:src="@{${ob.pimg}}" class="card-img-top" height="180" width="100%">
-      </a>
-      <span class="discount-tag"
-            th:text="${#numbers.formatDecimal((ob.pdiscount / ob.pprice) * 100, 2, 2)} + '%' + ' Off'">
+      <img th:src="@{${ob.pimg}}" class="card-img-top" style="height: 180px; object-fit: cover;">
+      <span class="position-absolute top-0 start-0 m-2 badge bg-danger text-white fs-6"
+            th:text="${#numbers.formatDecimal((ob.pdiscount / ob.pprice) * 100, 0, 0)} + '% OFF'">
       </span>
     </div>
-
     <div class="card-body d-flex flex-column justify-content-between text-center">
       <div>
         <h5 class="card-title">[[${ob.pname}]]</h5>
         <p class="card-text">[[${ob.quantity}]]</p>
-        <strike class="card-text">&#8377;[[${ob.pprice}]]</strike>
-        <strong class="card-text fs-5"
-                th:text="'&#8377;' + ${#numbers.formatDecimal(ob.pprice - ob.pdiscount, 2, 2)}">
-        </strong>
+        <strike class="card-text">&#8377;[[${ob.pprice}]]</strike><br>
+        <strong class="card-text fs-5" th:text="'&#8377;' + ${#numbers.formatDecimal(ob.pprice - ob.pdiscount, 2, 2)}"></strong>
       </div>
       <div class="mt-3" th:attr="id='button-container-' + ${ob.id}">
-  <button class="btn btn-primary" th:onclick="'addToCart(' + ${ob.id} + ')'">Add</button>
-</div>
-
+        <button class="btn btn-primary" th:onclick="'addToCart(' + ${ob.id} + ')'">Add</button>
       </div>
     </div>
+  </div>
+</div>
 
+<!-- Responsive Banner 1 -->
+<div class="container-fluid my-4 px-3">
+  <div class="row align-items-center banner-row rounded shadow" style="background-color: #fff0d6;">
+    <div class="col-md-6 text-center text-md-start p-4">
+      <h3 class="fw-bold text-dark">Exclusive Summer Sale ☀️</h3>
+      <p class="text-secondary">Up to 50% off on all kitchen appliances. Limited time offer!</p>
+      <a href="#" class="btn btn-outline-warning">Shop Now</a>
+    </div>
+    <div class="col-md-6 text-center">
+      <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+           alt="Kitchen Sale" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+    </div>
   </div>
 </div>
 
 
-	
 
-
-<!-- Cafe Sub categories -->
-<h2 class="m-2 bg-primary text-white p-2">Cafe items</h2>
-<div  class="d-flex overflow-auto px-3 py-4 gap-3"
-		style="scroll-snap-type: x mandatory; scroll-behavior: smooth;">
-
-		<!-- Category cards -->
-		<div class="flex-shrink-0" style="width: 10rem; scroll-snap-align: start;" th:each="ob : ${slist}" th:if="${ob.category.name == 'Cafe'}">
-			<a th:href="@{/product/getproduct(categoryId=${ob.category.id})}">
-				<img th:src="@{${ob.img}}"
-					style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" />
-			</a>
-			<p class="mt-2 fw-bold text-center" th:text="${ob.name}"></p>
-		</div>
-
-	</div>
-
-
-
-	<!-- Toast Container - Top Center -->
-<div id="cart-success-alert" class="alert alert-success position-fixed top-0 start-50 translate-middle-x m-4 d-none" role="alert">
-    Product successfully added to cart!
+<!-- Row 2: Another 10 Random Products -->
+<h4 class="ms-3 mt-4 fw-bold">You Might Also Like</h4>
+<div class="d-flex overflow-auto px-3 py-4 gap-3 m-2" style="scroll-snap-type: x mandatory;">
+  <div class="card flex-shrink-0" style="width: 15rem; scroll-snap-align: start;" th:each="ob : ${list}">
+    <div class="position-relative">
+      <img th:src="@{${ob.pimg}}" class="card-img-top" style="height: 180px; object-fit: cover;">
+      <span class="position-absolute top-0 start-0 m-2 badge bg-danger text-white fs-6"
+            th:text="${#numbers.formatDecimal((ob.pdiscount / ob.pprice) * 100, 0, 0)} + '% OFF'">
+      </span>
+    </div>
+    <div class="card-body d-flex flex-column justify-content-between text-center">
+      <div>
+        <h5 class="card-title">[[${ob.pname}]]</h5>
+        <p class="card-text">[[${ob.quantity}]]</p>
+        <strike class="card-text">&#8377;[[${ob.pprice}]]</strike><br>
+        <strong class="card-text fs-5" th:text="'&#8377;' + ${#numbers.formatDecimal(ob.pprice - ob.pdiscount, 2, 2)}"></strong>
+      </div>
+      <div class="mt-3" th:attr="id='button-container-' + ${ob.id}">
+        <button class="btn btn-primary" th:onclick="'addToCart(' + ${ob.id} + ')'">Add</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 
 
 
+  <!-- Cafe Categories -->
+  <h2 class="m-2 bg-primary text-white p-2">Cafe items</h2>
+  <div class="d-flex overflow-auto px-3 py-4 gap-3" style="scroll-snap-type: x mandatory; scroll-behavior: smooth;">
+    <div class="flex-shrink-0" style="width: 10rem; scroll-snap-align: start;" th:each="ob : ${slist}" th:if="${ob.category.name == 'Cafe'}">
+      <a th:href="@{/product/getproduct(categoryId=${ob.category.id})}">
+        <img th:src="@{${ob.img}}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;" />
+      </a>
+      <p class="mt-2 fw-bold text-center" th:text="${ob.name}"></p>
+    </div>
+  </div>
 
+  <!-- ✅ Success Alert -->
+  <div id="cart-success-alert"
+       class="alert alert-success position-fixed top-0 start-50 translate-middle-x m-4 d-none"
+       role="alert">
+    Product successfully added to cart!
+  </div>
+  
+  <!-- Responsive Banner 2 -->
+<div class="container-fluid my-4 px-3">
+  <div class="row align-items-center banner-row rounded shadow" style="background-color: #e0f7ff;">
+    <div class="col-md-6 text-center">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/035/198/647/small/ai-generated-online-shopping-representation-with-people-on-digital-devices-surrounded-by-gifts-and-icons-of-products-photo.jpg"
+           alt="Flash Deals" class="img-fluid rounded" style="max-height: 250px; object-fit: cover;">
+    </div>
+    <div class="col-md-6 text-center text-md-start p-4">
+      <h3 class="fw-bold text-dark">ZippyGo Flash Deals ⚡</h3>
+      <p class="text-secondary">Grab your favorites before they’re gone! Limited stocks available.</p>
+      <a href="#" class="btn btn-outline-primary">Explore Deals</a>
+    </div>
+  </div>
+</div>
 
-
-	<section id="footer" class="float-start w-100">
-		<footer class="text-white pt-5 pb-4"
-			style="background-color: #FFB300;">
-			<div class="container text-center text-md-start">
-				<div class="row">
-
-					<!-- Company Info -->
-					<div class="col-md-3">
-						<h5 class="text-uppercase mb-4 font-weight-bold"
-							style="color: #8b6508;">ZippyGo</h5>
-						<p>Expertly managing events with precision, creativity, and a
-							seamless experience from concept to execution.</p>
-					</div>
-
-					<!-- Links -->
-					<div class="col-md-3">
-						<h5 class="text-uppercase mb-4 font-weight-bold"
-							style="color: #8b6508;">Products</h5>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Fruits &
-								Vegitables</a>
-						</p>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Home
-								Appliences</a>
-						</p>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Electronics</a>
-						</p>
-					</div>
-
-					<!-- Useful Links -->
-					<div class="col-md-3">
-						<h5 class="text-uppercase mb-4 font-weight-bold"
-							style="color: #8b6508;">Useful Links</h5>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Your
-								Account</a>
-						</p>
-						<p>
-							<a href="#services" class="text-decoration-none text-white">Services</a>
-						</p>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Shipping
-								Rates</a>
-						</p>
-						<p>
-							<a href="#" class="text-decoration-none text-white">Help</a>
-						</p>
-					</div>
-
-					<!-- Contact -->
-					<div class="col-md-2">
-						<h5 class="text-uppercase mb-4 font-weight-bold"
-							style="color: #8b6508;">Contact</h5>
-						<p>
-							<i class="fas fa-home me-2"></i> Vijaynagar, Bangalore
-						</p>
-						<p>
-							<i class="fas fa-envelope me-2"></i><a
-								href="mailto:zippygo@gmail.com"
-								class="text-white text-decoration-none"> zippygo.com</a>
-						</p>
-						<p>
-							<i class="fas fa-phone me-2"></i> +91-98861892681
-						</p>
-						<p>
-							<i class="fas fa-print me-2"></i> +91-98861892682
-						</p>
-					</div>
-				</div>
-
-				<hr class="my-3">
-
-				<!-- Social Media Links -->
-				<div class="row align-items-center text-center">
-					<div class="col-12">
-						<div class="d-flex justify-content-center gap-3">
-							<a href="https://www.facebook.com" target="_blank"
-								class="btn btn-outline-danger text-white" role="button"> <i
-								class="fab fa-facebook-f"></i>
-							</a> <a href="https://www.twitter.com" target="_blank"
-								class="btn btn-outline-danger text-white" role="button"> <i
-								class="fab fa-twitter"></i>
-							</a> <a href="https://www.google.com" target="_blank"
-								class="btn btn-outline-danger text-white" role="button"> <i
-								class="fab fa-google"></i>
-							</a> <a href="https://www.instagram.com" target="_blank"
-								class="btn btn-outline-danger text-white" role="button"> <i
-								class="fab fa-instagram"></i>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<hr class="my-3">
-
-				
-			</div>
-		</footer>
-	</section>
-
-	<script>
   
 
-  function scrollLeft() {
-	  const container = document.getElementById("categoryScroll");
-	  container.scrollBy({ left: -300, behavior: "smooth" });
-	}
+  <!-- Footer -->
+  <section id="footer" class="float-start w-100">
+    <footer class="text-white pt-5 pb-4" style="background-color: #FFB300;">
+      <div class="container text-center text-md-start">
+        <div class="row">
+          <div class="col-md-3">
+            <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">ZippyGo</h5>
+            <p>Expertly managing events with precision, creativity, and a seamless experience from concept to execution.</p>
+          </div>
+          <div class="col-md-3">
+            <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Products</h5>
+            <p><a href="#" class="text-decoration-none text-white">Fruits & Vegetables</a></p>
+            <p><a href="#" class="text-decoration-none text-white">Home Appliances</a></p>
+            <p><a href="#" class="text-decoration-none text-white">Electronics</a></p>
+          </div>
+          <div class="col-md-3">
+            <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Useful Links</h5>
+            <p><a href="#" class="text-decoration-none text-white">Your Account</a></p>
+            <p><a href="#services" class="text-decoration-none text-white">Services</a></p>
+            <p><a href="#" class="text-decoration-none text-white">Shipping Rates</a></p>
+            <p><a href="#" class="text-decoration-none text-white">Help</a></p>
+          </div>
+          <div class="col-md-3">
+            <h5 class="text-uppercase mb-4 font-weight-bold" style="color: #8b6508;">Contact</h5>
+            <p><i class="fas fa-home me-2"></i> Vijaynagar, Bangalore</p>
+            <p><i class="fas fa-envelope me-2"></i><a href="mailto:zippygo@gmail.com" class="text-white text-decoration-none"> zippygo.com</a></p>
+            <p><i class="fas fa-phone me-2"></i> +91-98861892681</p>
+            <p><i class="fas fa-print me-2"></i> +91-98861892682</p>
+          </div>
+        </div>
 
-	function scrollRight() {
-	  const container = document.getElementById("categoryScroll");
-	  container.scrollBy({ left: 300, behavior: "smooth" });
-	}
+        <hr class="my-3">
+        <div class="row align-items-center text-center">
+          <div class="col-12">
+            <div class="d-flex justify-content-center gap-3">
+              <a href="https://www.facebook.com" class="btn btn-outline-danger text-white"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://www.twitter.com" class="btn btn-outline-danger text-white"><i class="fab fa-twitter"></i></a>
+              <a href="https://www.google.com" class="btn btn-outline-danger text-white"><i class="fab fa-google"></i></a>
+              <a href="https://www.instagram.com" class="btn btn-outline-danger text-white"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+        <hr class="my-3">
+      </div>
+    </footer>
+  </section>
 
+  <!-- JS Scroll Function -->
+  <script>
+    function scrollLeft() {
+      const container = document.getElementById("categoryScroll");
+      container.scrollBy({ left: -300, behavior: "smooth" });
+    }
 
-  window.onload = updateCartCount;
-</script>
+    function scrollRight() {
+      const container = document.getElementById("categoryScroll");
+      container.scrollBy({ left: 300, behavior: "smooth" });
+    }
 
-
-
+    window.onload = updateCartCount;
+  </script>
 </body>
 </html>

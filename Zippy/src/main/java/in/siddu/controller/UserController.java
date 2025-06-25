@@ -13,10 +13,12 @@ import in.siddu.entity.Category;
 import in.siddu.entity.Product;
 import in.siddu.entity.SubCategory;
 import in.siddu.entity.User;
+import in.siddu.repository.UserRepo;
 import in.siddu.service.AddCategory;
 import in.siddu.service.SubCategoryService;
 import in.siddu.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 @Controller
 @RequestMapping("/user")
@@ -24,6 +26,9 @@ public class UserController {
 
     @Autowired
     private UserService service;
+    
+    @Autowired
+    private UserRepo repo;
 
     @Autowired
     private AddCategory cservice;
@@ -52,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/userregister")
-    public String userRegister(@ModelAttribute User u, Model model) {
+    public String userRegister(@ModelAttribute User u, RedirectAttributes model) {
         boolean exist = service.checkUser(u.getEmail());
         String page = "";
 
@@ -61,10 +66,10 @@ public class UserController {
             String uname = u.getName();
 
             if (uid > 0) {
-                model.addAttribute("message", uname + " Registered Successfully with ID: " + uid);
+                model.addFlashAttribute("message", uname + " Registered Successfully with ID: " + uid);
                 page = "login";
             } else {
-                model.addAttribute("message", "Registration Unsuccessful");
+                model.addFlashAttribute("message", "Registration Unsuccessful");
                 page = "register";
             }
         } else {
@@ -75,7 +80,7 @@ public class UserController {
     }
 
     @PostMapping("/Home")
-    public String userLogin(@ModelAttribute User u, HttpSession session, Model model) {
+    public String userLogin(@ModelAttribute User u, HttpSession session,  Model model) {
         String page = "";
         String status = service.loginUser(u.getEmail(), u.getPassword(), session);
 
@@ -91,7 +96,7 @@ public class UserController {
             } else {
                 System.out.println("User login successful");
 
-                List<Product> plist = service.getAllProducts();
+                List<Product> plist = repo.getRandomProducts(10);
                 List<Category> clist = cservice.getAllCategories();
                 List<SubCategory> slist = sservice.getAllSubCategories();
 
@@ -102,7 +107,7 @@ public class UserController {
                 page = "UserHome";
             }
         } else {
-            model.addAttribute("message", "Login failed");
+            model.addAttribute("message", "Invalid Credentials try again..!!");
             System.out.println("Login failed..");
             page = "login";
         }
@@ -130,7 +135,7 @@ public class UserController {
             page = "adminHome";
         } else {
 
-        List<Product> plist = service.getAllProducts();
+        List<Product> plist = repo.getRandomProducts(10);
         List<Category> clist = cservice.getAllCategories();
         List<SubCategory> slist = sservice.getAllSubCategories();
 
@@ -181,6 +186,7 @@ public class UserController {
     }
 
     // Admin - delete user
+    @Transactional
     @GetMapping("/delete")
     public String delete(@RequestParam Integer id, HttpSession session,RedirectAttributes attributes) {
     	
@@ -190,14 +196,8 @@ public class UserController {
     		return "login";
     	}
     	
-    	if(user.getEmail().equals("admin@gmail.com"))
-    	{
-    		attributes.addFlashAttribute("message", "Admin account can't be deleted");
-    	}
-    	else {
-        service.delete(id);
-        attributes.addFlashAttribute("message", "User " + id + " deleted successfully");
-    	}
+       repo.deleteByUserId(id);
+        attributes.addFlashAttribute("message", "admin account cannot be deleted");
         return "redirect:allusers";
     	
     }
